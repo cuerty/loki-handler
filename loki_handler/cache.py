@@ -6,18 +6,24 @@ import collections
 def lru_cache(maxsize=255, timeout=None):
     """lru_cache(maxsize = 255, timeout = None) --> returns a decorator which returns an instance (a descriptor).
 
-        Purpose         - This decorator factory will wrap a function / instance method and will supply a caching mechanism to the function.
-                            For every given input params it will store the result in a queue of maxsize size, and will return a cached ret_val
-                            if the same parameters are passed.
+        Purpose         - This decorator factory will wrap a function / instance method and will supply a caching
+                          mechanism to the function.
+                          For every given input params it will store the result in a queue of maxsize size, and will
+                          return a cached ret_val if the same parameters are passed.
 
-        Params          - maxsize - int, the cache size limit, anything added above that will delete the first values enterred (FIFO).
-                            This size is per instance, thus 1000 instances with maxsize of 255, will contain at max 255K elements.
-                        - timeout - int / float / None, every n seconds the cache is deleted, regardless of usage. If None - cache will never be refreshed.
+        Params          - maxsize - int, the cache size limit, anything added above that will delete the first values
+                          enterred (FIFO).
+                          This size is per instance, thus 1000 instances with maxsize of 255, will contain at max 255K
+                          elements.
+                        - timeout - int / float / None, every n seconds the cache is deleted, regardless of usage. If
+                          None - cache will never be refreshed.
 
         Notes           - If an instance method is wrapped, each instance will have it's own cache and it's own timeout.
-                        - The wrapped function will have a cache_clear variable inserted into it and may be called to clear it's specific cache.
+                        - The wrapped function will have a cache_clear variable inserted into it and may be called to
+                          clear it's specific cache.
                         - The wrapped function will maintain the original function's docstring and name (wraps)
-                        - The type of the wrapped function will no longer be that of a function but either an instance of _LRU_Cache_class or a functool.partial type.
+                        - The type of the wrapped function will no longer be that of a function but either an instance
+                          of _LRU_Cache_class or a functool.partial type.
 
         On Error        - No error handling is done, in case an exception is raised - it will permeate up.
     """
@@ -27,8 +33,10 @@ def lru_cache(maxsize=255, timeout=None):
             self._max_size = max_size
             self._timeout = timeout
 
-            # This will store the cache for this function, format - {caller1 : [OrderedDict1, last_refresh_time1], caller2 : [OrderedDict2, last_refresh_time2]}.
-            #   In case of an instance method - the caller is the instance, in case called from a regular function - the caller is None.
+            # This will store the cache for this function, format - {caller1 : [OrderedDict1, last_refresh_time1],
+            # caller2 : [OrderedDict2, last_refresh_time2]}.
+            # In case of an instance method - the caller is the instance, in case called from a regular function - the
+            # caller is None.
             self._caches_dict = {}
 
         def cache_clear(self, caller=None):
@@ -85,13 +93,15 @@ def lru_cache(maxsize=255, timeout=None):
                 # Delete the first item in the dict:
                 cur_caller_cache_dict.popitem(False)
 
-            # Call the function and store the data in the cache (call it with the caller in case it's an instance function - Ternary condition):
+            # Call the function and store the data in the cache (call it with the caller in case it's an instance
+            # function - Ternary condition):
             cur_caller_cache_dict[key] = self._input_func(
                 caller, *args, **
                 kwargs) if caller != None else self._input_func(
                     *args, **kwargs)
             return cur_caller_cache_dict[key]
 
-    # Return the decorator wrapping the class (also wraps the instance to maintain the docstring and the name of the original function):
+    # Return the decorator wrapping the class (also wraps the instance to maintain the docstring and the name of the
+    # original function):
     return (lambda input_func: functools.wraps(input_func)
             (_LRU_Cache_class(input_func, maxsize, timeout)))
