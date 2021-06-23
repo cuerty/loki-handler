@@ -178,5 +178,5 @@ def test_can_build_tags_from_converting_dict(emitter_v0):
     loggingDictConfig(config)
 
     logger = logging.getLogger(logger_name)
-    emitter = logger.handlers[0].handler.emitter
+    emitter = logger.handlers[0].emitter
     emitter.build_tags(create_record())
