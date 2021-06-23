@@ -3,6 +3,7 @@ loki-handler
 
 [![PyPI version](https://img.shields.io/pypi/v/loki-handler.svg)](https://pypi.org/project/loki-handler/)
 [![License](https://img.shields.io/pypi/l/loki-handler.svg)](https://opensource.org/licenses/MIT)
+[![CircleCI](https://circleci.com/gh/cuerty/loki-handler/tree/master.svg?style=svg)](https://circleci.com/gh/cuerty/loki-handler/?branch=master)
 
 Python logging handler for Loki.  
 https://grafana.com/loki
