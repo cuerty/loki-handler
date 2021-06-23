@@ -10,7 +10,7 @@ from logging.config import ConvertingDict
 import requests
 import rfc3339
 
-import const
+from loki_handler import const
 
 
 class LokiEmitter(object):

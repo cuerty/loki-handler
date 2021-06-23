@@ -3,8 +3,8 @@
 import logging
 import warnings
 
-import const
-import emitter
+from loki_handler import const
+from loki_handler import emitter
 
 
 class LokiHandler(logging.Handler):
