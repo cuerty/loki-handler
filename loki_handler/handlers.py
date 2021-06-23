@@ -2,23 +2,9 @@
 
 import logging
 import warnings
-from Queue import Queue
-from logging.handlers import QueueHandler
-from logging.handlers import QueueListener
 
 import const
 import emitter
-
-
-class LokiQueueHandler(QueueHandler):
-    """This handler automatically creates listener and `LokiHandler` to handle logs queue."""
-
-    def __init__(self, queue, **kwargs):
-        """Create new logger handler with the specified queue and kwargs for the `LokiHandler`."""
-        super().__init__(queue)
-        self.handler = LokiHandler(**kwargs)  # noqa: WPS110
-        self.listener = QueueListener(self.queue, self.handler)
-        self.listener.start()
 
 
 class LokiHandler(logging.Handler):
