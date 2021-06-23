@@ -7,8 +7,8 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Test
-        command: 'tox'
+          name: Test
+          command: tox
 
 workflows:
   version: 2
