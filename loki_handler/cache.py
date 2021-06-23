@@ -97,10 +97,7 @@ def lru_cache(maxsize=255, timeout=None):
             # function - Ternary condition):
             if caller is not None:
                 cur_caller_cache_dict[key] = self._input_func(
-                    caller,
-                    *args,
-                    **kwargs,
-                )
+                    caller, *args, **kwargs)
             else:
                 cur_caller_cache_dict[key] = self._input_func(*args, **kwargs)
             return cur_caller_cache_dict[key]
