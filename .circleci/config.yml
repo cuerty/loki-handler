@@ -4,11 +4,11 @@ jobs:
   test:
     docker:
       - image: fkrull/multi-python
-        steps:
-          - checkout
-          - run:
-            name: Test
-            command: 'tox'
+    steps:
+      - checkout
+      - run:
+        name: Test
+        command: 'tox'
 
 workflows:
   version: 2
