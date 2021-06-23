@@ -95,11 +95,14 @@ def lru_cache(maxsize=255, timeout=None):
 
             # Call the function and store the data in the cache (call it with the caller in case it's an instance
             # function - Ternary condition):
-            cur_caller_cache_dict[key] = self._input_func(
-                caller,
-                *args,
-                **kwargs,
-            ) if caller is not None else self._input_func(*args, **kwargs)
+            if caller is not None:
+                cur_caller_cache_dict[key] = self._input_func(
+                    caller,
+                    *args,
+                    **kwargs,
+                )
+            else:
+                cur_caller_cache_dict[key] = self._input_func(*args, **kwargs)
             return cur_caller_cache_dict[key]
 
     # Return the decorator wrapping the class (also wraps the instance to maintain the docstring and the name of the
