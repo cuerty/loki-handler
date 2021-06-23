@@ -44,7 +44,6 @@ class LokiEmitter(object):
         """Send log record to Loki."""
         payload = self.build_payload(record, line)
         resp = self.session.post(self.url, json=payload)
-        print resp.content
         if resp.status_code != self.success_response_code:
             raise ValueError("Unexpected Loki API response status code: {0}".format(resp.status_code))
 
