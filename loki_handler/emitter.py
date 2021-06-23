@@ -2,7 +2,6 @@
 
 import abc
 import copy
-from cache import lru_cache
 import logging
 import time
 from logging.config import ConvertingDict
@@ -10,6 +9,7 @@ from logging.config import ConvertingDict
 import requests
 import rfc3339
 
+from loki_handler import cache
 from loki_handler import const
 
 
@@ -66,7 +66,7 @@ class LokiEmitter(object):
             self._session.close()
             self._session = None
 
-    @lru_cache(const.format_label_lru_size)
+    @cache.lru_cache(const.format_label_lru_size)
     def format_label(self, label):
         """
         Build label to match prometheus format.
