@@ -2,7 +2,8 @@ import time
 import functools
 import collections
 
-def lru_cache(maxsize = 255, timeout = None):
+
+def lru_cache(maxsize=255, timeout=None):
     """lru_cache(maxsize = 255, timeout = None) --> returns a decorator which returns an instance (a descriptor).
 
         Purpose         - This decorator factory will wrap a function / instance method and will supply a caching mechanism to the function.
@@ -20,22 +21,24 @@ def lru_cache(maxsize = 255, timeout = None):
 
         On Error        - No error handling is done, in case an exception is raised - it will permeate up.
     """
-
     class _LRU_Cache_class(object):
         def __init__(self, input_func, max_size, timeout):
-            self._input_func        = input_func
-            self._max_size          = max_size
-            self._timeout           = timeout
+            self._input_func = input_func
+            self._max_size = max_size
+            self._timeout = timeout
 
             # This will store the cache for this function, format - {caller1 : [OrderedDict1, last_refresh_time1], caller2 : [OrderedDict2, last_refresh_time2]}.
             #   In case of an instance method - the caller is the instance, in case called from a regular function - the caller is None.
-            self._caches_dict        = {}
+            self._caches_dict = {}
 
-        def cache_clear(self, caller = None):
+        def cache_clear(self, caller=None):
             # Remove the cache for the caller, only if exists:
             if caller in self._caches_dict:
                 del self._caches_dict[caller]
-                self._caches_dict[caller] = [collections.OrderedDict(), time.time()]
+                self._caches_dict[caller] = [
+                    collections.OrderedDict(),
+                    time.time()
+                ]
 
         def __get__(self, obj, objtype):
             """ Called for instance methods """
@@ -47,22 +50,29 @@ def lru_cache(maxsize = 255, timeout = None):
         def __call__(self, *args, **kwargs):
             """ Called for regular functions """
             return self._cache_wrapper(None, *args, **kwargs)
+
         # Set the cache_clear function in the __call__ operator:
         __call__.cache_clear = cache_clear
 
-
         def _cache_wrapper(self, caller, *args, **kwargs):
             # Create a unique key including the types (in order to differentiate between 1 and '1'):
-            kwargs_key = "".join(map(lambda x : str(x) + str(type(kwargs[x])) + str(kwargs[x]), sorted(kwargs)))
-            key = "".join(map(lambda x : str(type(x)) + str(x) , args)) + kwargs_key
+            kwargs_key = "".join(
+                map(lambda x: str(x) + str(type(kwargs[x])) + str(kwargs[x]),
+                    sorted(kwargs)))
+            key = "".join(map(lambda x: str(type(x)) + str(x),
+                              args)) + kwargs_key
 
             # Check if caller exists, if not create one:
             if caller not in self._caches_dict:
-                self._caches_dict[caller] = [collections.OrderedDict(), time.time()]
+                self._caches_dict[caller] = [
+                    collections.OrderedDict(),
+                    time.time()
+                ]
             else:
                 # Validate in case the refresh time has passed:
                 if self._timeout != None:
-                    if time.time() - self._caches_dict[caller][1] > self._timeout:
+                    if time.time(
+                    ) - self._caches_dict[caller][1] > self._timeout:
                         self.cache_clear(caller)
 
             # Check if the key exists, if so - return it:
@@ -76,10 +86,12 @@ def lru_cache(maxsize = 255, timeout = None):
                 cur_caller_cache_dict.popitem(False)
 
             # Call the function and store the data in the cache (call it with the caller in case it's an instance function - Ternary condition):
-            cur_caller_cache_dict[key] = self._input_func(caller, *args, **kwargs) if caller != None else self._input_func(*args, **kwargs)
+            cur_caller_cache_dict[key] = self._input_func(
+                caller, *args, **
+                kwargs) if caller != None else self._input_func(
+                    *args, **kwargs)
             return cur_caller_cache_dict[key]
 
-
     # Return the decorator wrapping the class (also wraps the instance to maintain the docstring and the name of the original function):
-    return (lambda input_func : functools.wraps(input_func)(_LRU_Cache_class(input_func, maxsize, timeout)))
-
+    return (lambda input_func: functools.wraps(input_func)
+            (_LRU_Cache_class(input_func, maxsize, timeout)))

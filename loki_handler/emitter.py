@@ -2,7 +2,6 @@
 
 import abc
 import copy
-import logging
 import time
 from logging.config import ConvertingDict
 
@@ -45,7 +44,9 @@ class LokiEmitter(object):
         payload = self.build_payload(record, line)
         resp = self.session.post(self.url, json=payload)
         if resp.status_code != self.success_response_code:
-            raise ValueError("Unexpected Loki API response status code: {0}".format(resp.status_code))
+            raise ValueError(
+                "Unexpected Loki API response status code: {0}".format(
+                    resp.status_code))
 
     @abc.abstractmethod
     def build_payload(self, record, line):
@@ -74,11 +75,13 @@ class LokiEmitter(object):
         """
         for char_from, char_to in self.label_replace_with:
             label = label.replace(char_from, char_to)
-        return "".join(char for char in label if char in self.label_allowed_chars)
+        return "".join(char for char in label
+                       if char in self.label_allowed_chars)
 
     def build_tags(self, record):
         """Return tags that must be send to Loki with a log record."""
-        tags = dict(self.tags) if isinstance(self.tags, ConvertingDict) else self.tags
+        tags = dict(self.tags) if isinstance(self.tags,
+                                             ConvertingDict) else self.tags
         tags = copy.deepcopy(tags)
         tags[self.level_tag] = record.levelname.lower()
         tags[self.logger_tag] = record.name
@@ -97,14 +100,16 @@ class LokiEmitter(object):
 
 class LokiEmitterV0(LokiEmitter):
     """Emitter for Loki < 0.4.0."""
-
     def build_payload(self, record, line):
         """Build JSON payload with a log entry."""
         labels = self.build_labels(record)
         ts = rfc3339.format_microsecond(record.created)
         stream = {
             "labels": labels,
-            "entries": [{"ts": ts, "line": line}],
+            "entries": [{
+                "ts": ts,
+                "line": line
+            }],
         }
         return {"streams": [stream]}
 
@@ -120,7 +125,6 @@ class LokiEmitterV0(LokiEmitter):
 
 class LokiEmitterV1(LokiEmitter):
     """Emitter for Loki >= 0.4.0."""
-
     def build_payload(self, record, line):
         """Build JSON payload with a log entry."""
         labels = self.build_tags(record)

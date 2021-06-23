@@ -9,7 +9,7 @@ from freezegun import freeze_time
 
 from loki_handler.emitter import LokiEmitterV1
 
-emitter_url= "https://example.net/loki/api/v1/push/"
+emitter_url = "https://example.net/loki/api/v1/push/"
 record_kwargs = {
     "name": "test",
     "level": logging.WARNING,
@@ -126,7 +126,8 @@ def test_raises_value_error_on_non_successful_response(emitter_v1):
     session().post().status_code = None
     with pytest.raises(ValueError):
         emitter(create_record(), "")
-        pytest.fail("Must raise ValueError on non-successful Loki response")  # pragma: no cover
+        pytest.fail("Must raise ValueError on non-successful Loki response"
+                    )  # pragma: no cover
 
 
 def test_logged_messaged_added_to_values(emitter_v1):
@@ -164,11 +165,18 @@ def test_can_build_tags_from_converting_dict(emitter_v1):
             logger_name: {
                 "class": "loki_handler.LokiHandler",
                 "url": emitter_url,
-                "tags": {"test": "test"},
+                "tags": {
+                    "test": "test"
+                },
                 "version": "1",
             },
         },
-        "loggers": {logger_name: {"handlers": [logger_name], "level": "DEBUG"}},
+        "loggers": {
+            logger_name: {
+                "handlers": [logger_name],
+                "level": "DEBUG"
+            }
+        },
     }
     loggingDictConfig(config)
 
