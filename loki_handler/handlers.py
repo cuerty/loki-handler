@@ -46,7 +46,7 @@ class LokiHandler(logging.Handler):
     def handleError(self, record):  # noqa: N802
         """Close emitter and let default handler take actions on error."""
         self.emitter.close()
-        super().handleError(record)
+        super(LokiHandler, self).handleError(record)
 
     def emit(self, record):
         """Send log record to Loki."""
